@@ -413,7 +413,7 @@ if __name__ == "__main__":
     frame_size = (640, 480)
     exposure_us = 100
     analogue_gain = 1.0
-    pam_order = 8               # M of M-PAM: number of intensity levels (Gaussians) to fit
+    pam_order = 4               # M of M-PAM: number of intensity levels (Gaussians) to fit
     plot_every_n_frames = 3
 
     if pam_order < 2:
