@@ -52,7 +52,7 @@ The terminal has to belong to the desktop session so the windows can open. If yo
 Two windows open:
 
 - **Camera**: the live image. Click a pixel to select it. The green crosshair marks the selected pixel and its current intensity.
-- **Plots**: on the left, the selected pixel's waveform over the last ~20 s, with the maximum-likelihood decision thresholds drawn in red. On the right, an intensity histogram with an 8-component Gaussian mixture fit and the estimated symbol levels.
+- **Plots**: on the left, the selected pixel's waveform over the last ~20 s, with the maximum-likelihood decision thresholds drawn in red. On the right, an intensity histogram with a Gaussian mixture fit (one Gaussian per PAM level, set by `pam_order`) and the estimated symbol levels.
 
 The terminal prints the SNR and BER estimates as the plots update. Press **ESC** in the Camera window to quit.
 
@@ -67,10 +67,12 @@ The demo's parameters are set at the bottom of [`devkit-demo.py`](devkit-demo.py
 | `exposure_us`      | `100`        | Exposure time in microseconds                               |
 | `analogue_gain`    | `1.0`        | Sensor analogue gain                                        |
 | `live_buffer_size` | `600`        | Number of samples kept in the live window (~20 s at 30 fps) |
+| `pam_order`        | `8`          | M of the M-PAM signal: number of Gaussians fitted           |
+| `plot_every_n_frames` | `3`       | How often the plots and SNR/BER estimates refresh           |
 
 The short default exposure keeps the background dark so that the transmitter stands out. Raise `exposure_us` or `analogue_gain` if the image is too dark to find the LED.
 
-The number of PAM levels looked for (8) and how often the plots refresh (every 3 frames) are passed to `AlgorithmProcess` in the same block.
+Set `pam_order` to the number of intensity levels your transmitter uses (for example 2 for OOK, 4 for 4-PAM). The BER estimate assumes Gray coding, so it is most meaningful when M is a power of 2.
 
 ## Troubleshooting
 

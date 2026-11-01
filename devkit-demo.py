@@ -224,7 +224,7 @@ def AlgorithmProcess(
     fps=30.0,
     live_buffer_size=600,
     plot_every_n_frames=3,
-    gmm_components=8
+    pam_order=8
 ):
     """
     Receives frames, displays image + live waveform + live histogram + GMM fit,
@@ -265,7 +265,7 @@ def AlgorithmProcess(
     ax2.set_ylim(0, 255)
     ax2.set_xlabel("Count")
     ax2.set_ylabel("Pixel intensity")
-    ax2.set_title("Live histogram + 8-GMM fit")
+    ax2.set_title(f"Live histogram + {pam_order}-GMM fit")
     ax2.grid(True)
 
     x_pdf = np.linspace(0, 255, 1024).reshape(-1, 1)
@@ -328,7 +328,7 @@ def AlgorithmProcess(
                 threshold_lines.clear()
 
                 # Fit GMM
-                gmm, weights, means, stds = fit_gmm_1d(signal_list, n_components=gmm_components)
+                gmm, weights, means, stds = fit_gmm_1d(signal_list, n_components=pam_order)
 
                 if gmm is not None:
                     log_pdf = gmm.score_samples(x_pdf)
@@ -413,6 +413,11 @@ if __name__ == "__main__":
     frame_size = (640, 480)
     exposure_us = 100
     analogue_gain = 1.0
+    pam_order = 8               # M of M-PAM: number of intensity levels (Gaussians) to fit
+    plot_every_n_frames = 3
+
+    if pam_order < 2:
+        raise ValueError("pam_order must be at least 2")
 
     AlgorithmSide, CameraSide = mp.Pipe()
     MainSide, AlgorithmToMainSide = mp.Pipe()
@@ -423,7 +428,7 @@ if __name__ == "__main__":
     )
     p2 = mp.Process(
         target=AlgorithmProcess,
-        args=(CameraSide, AlgorithmToMainSide, fps, live_buffer_size, 3, 8)
+        args=(CameraSide, AlgorithmToMainSide, fps, live_buffer_size, plot_every_n_frames, pam_order)
     )
 
     p1.start()
