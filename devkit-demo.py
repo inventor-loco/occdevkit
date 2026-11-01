@@ -224,7 +224,7 @@ def AlgorithmProcess(
     fps=30.0,
     live_buffer_size=600,
     plot_every_n_frames=3,
-    pam_order=8
+    pam_order=4
 ):
     """
     Receives frames, displays image + live waveform + live histogram + GMM fit,
